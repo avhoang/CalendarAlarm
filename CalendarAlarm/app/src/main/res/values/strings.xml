@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">CalendarAlarm</string>
+    <string name="action_settings">Settings</string>
+    <string name="date">Select a date.</string>
+    <string name="date_text_label">Date: </string>
+    <string name="time_text_label">Time: </string>
+    <string name="time_edit_text">Select a time.</string>
+    <string name="done_button_text">Done</string>
+</resources>

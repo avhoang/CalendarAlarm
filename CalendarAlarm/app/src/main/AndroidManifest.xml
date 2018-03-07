@@ -20,6 +20,17 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddActivity"></activity>
+        <activity
+            android:name=".DeleteActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <receiver android:name=".AlarmReceiver"/>
+        
+        <service android:name=".AlarmService"
+            android:enabled="true">
+
+        </service>
     </application>
 
 </manifest>

@@ -82,6 +82,7 @@
         android:padding="10dp"
         android:onClick="done"
         android:gravity="center"
+        android:enabled="false"
         />
 
 </android.support.constraint.ConstraintLayout>

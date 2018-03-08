@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     ToggleButton[] buttons;
     int index;
     PendingIntent pendingIntent;
+    //PendingIntent pendingIntentCancel;
     Intent alarmIntent;
     Boolean alarmShouldStart = false;
 
@@ -124,7 +125,9 @@ public class MainActivity extends AppCompatActivity {
                 buttons[index].setTextOn(alarm.getAlarmTime() + "\n ON");
                 buttons[index].setTextOff(alarm.getAlarmTime() + "\n OFF");
 
-
+                alarmIntent.putExtra("extra","alarm on");
+                pendingIntent = PendingIntent.getBroadcast(MainActivity.this,alarm.getId(),
+                        alarmIntent,0);
 
                 if(alarm.getOnOff()==1) {
                     buttons[index].setChecked(true);
@@ -158,9 +161,10 @@ public class MainActivity extends AppCompatActivity {
                             dbManager.updateOnOff(alarm.getId(),0);
                             buttonView.getBackground().setColorFilter(getResources().getColor(R.color.offColor), PorterDuff.Mode.MULTIPLY);
                             Toast.makeText(getApplicationContext(),"Alarm Off", Toast.LENGTH_SHORT).show();
-                            cancelAlarm(index);
+                            cancelAlarm(pendingIntent);
                             alarmShouldStart=false;
                             stopAlarm();
+                            updateView();
                         }
                         else if(alarm.getOnOff() == 0){
                             alarm.setOn_off(1);
@@ -169,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(),"Alarm On", Toast.LENGTH_SHORT).show();
                             //startAlarm(alarm.getTimeInMil(), index);
                             alarmShouldStart=true;
-                            //updateView();
+                            updateView();
                         }
 
                     }
@@ -182,10 +186,11 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.i("alarmManager milTime", String.valueOf(alarm.getTimeInMil()));
                 if(alarmShouldStart){
-                    startAlarm(alarm.getTimeInMil(),index);
+                   //startAlarm(alarm.getTimeInMil(),index);
+                    initializeAlarm(alarm.getTimeInMil());
                 }
                 else{
-                    cancelAlarm(index);
+                    cancelAlarm(pendingIntent);
                 }
                 index++;
                 Log.i("Index", String.valueOf(index));
@@ -197,24 +202,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void startAlarm(long alarmTime, int requestCode){
+    private void initializeAlarm(long alarmTime){
+        alarmManager.set(AlarmManager.RTC_WAKEUP,alarmTime,pendingIntent);
+    }
+
+    private PendingIntent startAlarm(long alarmTime, int requestCode){
         alarmIntent.putExtra("extra","alarm on");
         pendingIntent = PendingIntent.getBroadcast(MainActivity.this,requestCode,
                 alarmIntent,0);
 
         alarmManager.set(AlarmManager.RTC_WAKEUP,alarmTime,pendingIntent);
 
+        return pendingIntent;
     }
 
-    private void cancelAlarm(int requestCode){
+    private void cancelAlarm(PendingIntent pendingIntentHolder){
+        //pendingIntent = PendingIntent.getBroadcast(MainActivity.this, requestCode,
+              //  alarmIntent,0);
 
-
-        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, requestCode,
-                alarmIntent,0);
-
-        alarmManager.cancel(pendingIntent);
-
-
+        alarmManager.cancel(pendingIntentHolder);
 
     }
 
